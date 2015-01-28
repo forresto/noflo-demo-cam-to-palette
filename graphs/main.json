@@ -3,7 +3,7 @@
         "name": "main",
         "environment": {
             "type": "noflo-browser",
-            "content": " <video id=\"video\" autoplay loop width=\"640\" height=\"480\" style=\"display:none;\"></video>\n <canvas id=\"canvas\" width=\"640\" height=\"480\" style=\"max-width:100%;\"></canvas><br>\n <canvas id=\"colors\" width=\"640\" height=\"100\" style=\"max-width:100%;\"></canvas>\n\n <button id=\"start\">start camera</button>\n"
+            "content": "<video id=\"video\" autoplay loop style=\"max-width:100%;\"></video><br>\n<canvas id=\"colors\" width=\"640\" height=\"100\" style=\"max-width:100%;\"></canvas>\n<button id=\"start\">start camera</button>\n"
         },
         "icon": ""
     },
@@ -18,18 +18,6 @@
                 "listen click",
                 "cam",
                 "set src"
-            ],
-            "metadata": {
-                "description": ""
-            }
-        },
-        {
-            "name": "cam to canvas",
-            "nodes": [
-                "#canvas",
-                "drawImage",
-                "to canvas",
-                "250ms"
             ],
             "metadata": {
                 "description": ""
@@ -56,6 +44,18 @@
             "metadata": {
                 "description": ""
             }
+        },
+        {
+            "name": "cam to canvas",
+            "nodes": [
+                "250ms",
+                "drawImage",
+                "offscreen canvas",
+                "to canvas"
+            ],
+            "metadata": {
+                "description": ""
+            }
         }
     ],
     "processes": {
@@ -64,17 +64,7 @@
             "metadata": {
                 "label": "#video",
                 "x": 612,
-                "y": 216,
-                "width": 72,
-                "height": 72
-            }
-        },
-        "#canvas": {
-            "component": "dom/GetElement",
-            "metadata": {
-                "label": "#canvas",
-                "x": 936,
-                "y": 612,
+                "y": 252,
                 "width": 72,
                 "height": 72
             }
@@ -84,7 +74,7 @@
             "metadata": {
                 "label": "cam",
                 "x": 612,
-                "y": 360,
+                "y": 396,
                 "width": 72,
                 "height": 72
             }
@@ -94,7 +84,7 @@
             "metadata": {
                 "label": "#start",
                 "x": 360,
-                "y": 360,
+                "y": 396,
                 "width": 72,
                 "height": 72
             }
@@ -104,7 +94,7 @@
             "metadata": {
                 "label": "listen click",
                 "x": 468,
-                "y": 360,
+                "y": 396,
                 "width": 72,
                 "height": 72
             }
@@ -114,7 +104,7 @@
             "metadata": {
                 "label": "set src",
                 "x": 720,
-                "y": 360,
+                "y": 396,
                 "width": 72,
                 "height": 72
             }
@@ -228,6 +218,16 @@
                 "width": 72,
                 "height": 72
             }
+        },
+        "offscreen canvas": {
+            "component": "canvas/CreateCanvas",
+            "metadata": {
+                "label": "offscreen canvas",
+                "x": 936,
+                "y": 612,
+                "width": 72,
+                "height": 72
+            }
         }
     },
     "connections": [
@@ -294,19 +294,6 @@
             },
             "metadata": {
                 "route": 4
-            }
-        },
-        {
-            "src": {
-                "process": "#canvas",
-                "port": "element"
-            },
-            "tgt": {
-                "process": "to canvas",
-                "port": "canvas"
-            },
-            "metadata": {
-                "route": 9
             }
         },
         {
@@ -447,20 +434,25 @@
             "tgt": {
                 "process": "core/Drop_oi2nc",
                 "port": "in"
+            }
+        },
+        {
+            "src": {
+                "process": "offscreen canvas",
+                "port": "canvas"
             },
-            "metadata": {}
+            "tgt": {
+                "process": "to canvas",
+                "port": "canvas"
+            },
+            "metadata": {
+                "route": 9
+            }
         },
         {
             "data": "#video",
             "tgt": {
                 "process": "#video",
-                "port": "selector"
-            }
-        },
-        {
-            "data": "#canvas",
-            "tgt": {
-                "process": "#canvas",
                 "port": "selector"
             }
         },
@@ -577,6 +569,20 @@
             "tgt": {
                 "process": "250ms",
                 "port": "interval"
+            }
+        },
+        {
+            "data": 640,
+            "tgt": {
+                "process": "offscreen canvas",
+                "port": "width"
+            }
+        },
+        {
+            "data": 480,
+            "tgt": {
+                "process": "offscreen canvas",
+                "port": "height"
             }
         }
     ]
